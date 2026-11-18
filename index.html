@@ -1498,7 +1498,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     var cp = profiles.filter(function (p) { return p.id === cur; })[0];
     var form = "";
     if (pmode === "new") { form = '<div class="pform"><input class="fld" id="pname" type="text" maxlength="30" placeholder="Nombre del perfil" autocomplete="off" aria-label="Nombre del nuevo perfil"><button class="copy" type="button" id="pcreate">Crear</button><button class="copy" type="button" id="pcancel">Cancelar</button></div>'; }
-    else if (pmode === "del") { form = '<div class="pform"><span>' + (profiles.length < 2 ? "No se puede borrar el único perfil." : '¿Borrar «' + esc(cp.name) + '»? Se pierden su fecha, su motivo de fin, sus pasos marcados y los datos de sus anexos.') + '</span>' + (profiles.length < 2 ? '' : '<button class="copy" type="button" id="pdoit">Sí, borrar</button>') + '<button class="copy" type="button" id="pcancel">' + (profiles.length < 2 ? "Cerrar" : "No") + '</button></div>'; }
+    else if (pmode === "del") { form = '<div class="pform"><span>' + '¿Borrar «' + esc(cp.name) + '»? Se pierden su fecha, su motivo de fin, sus pasos marcados y los datos de sus anexos.' + (profiles.length < 2 ? ' Como es el único, se creará un perfil nuevo y vacío.' : '') + '</span><button class="copy" type="button" id="pdoit">Sí, borrar</button><button class="copy" type="button" id="pcancel">No</button></div>'; }
     else if (pmode === "ren") { form = '<div class="pform"><input class="fld" id="pname" type="text" maxlength="30" value="' + esc(cp.name) + '" aria-label="Nuevo nombre del perfil"><button class="copy" type="button" id="prdo">Guardar</button><button class="copy" type="button" id="pcancel">Cancelar</button></div>'; }
     if (document.activeElement && document.activeElement.id === "pname") { return; }
     $("profbar").innerHTML = '<div class="prof"><label class="dl" for="prof">Perfil</label><select class="fld" id="prof">' + profiles.map(function (p) { return '<option value="' + p.id + '"' + (p.id === cur ? " selected" : "") + '>' + esc(p.name) + '</option>'; }).join("") + '</select><button class="copy" type="button" id="padd">Nuevo</button><button class="copy" type="button" id="pmore">Más</button></div>' +
@@ -1529,7 +1529,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     else if (id === "pdoit") {
       var gone = cur;
       ["cld", "route", "fest", "chk", "forms"].forEach(function (k) { try { localStorage.removeItem("p:" + gone + ":" + k); } catch (er) { /* sin almacenamiento */ } });
-      profiles = profiles.filter(function (p) { return p.id !== gone; }); cur = profiles[0].id; saveProfiles(); switchProfile();
+      profiles = profiles.filter(function (p) { return p.id !== gone; }); if (!profiles.length) { profiles.push({ id: "p" + Date.now().toString(36), name: "Mi perfil" }); } cur = profiles[0].id; saveProfiles(); switchProfile();
     }
   });
   $("profbar").addEventListener("keydown", function (e) {
