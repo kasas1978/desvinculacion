@@ -101,6 +101,22 @@ html.bigtext .nav a { font-size: 10.5px; }
 .inst > summary { cursor: pointer; display: flex; align-items: center; min-height: 40px; font-weight: 700; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); }
 .inst[open] > summary { margin-bottom: 8px; }
 .alerts.alx:empty { display: none; }
+.prog { gap: 12px; }
+.prog .phead b { font-size: 1.05rem; }
+.pbar { height: 10px; border-radius: 999px; background: var(--field); overflow: hidden; }
+.pbar i { display: block; height: 100%; background: var(--ok); border-radius: 999px; }
+.prog .btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.step.next { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.35); }
+.nxtbadge { align-self: flex-start; background: var(--orange); color: var(--orange-ink); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 8px; padding: 3px 8px; }
+.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; min-height: 40px; color: var(--purple); font-weight: 700; font-size: 0.92rem; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::before { content: "▸"; }
+.more[open] > summary::before { content: "▾"; }
+.more .mbody { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.more .mbody p { margin: 0; font-size: 0.92rem; color: #d3d7e3; }
+.step.done .more .mbody p { color: var(--muted); }
+.steps .phh span.phc { color: var(--ok); font-weight: 700; }
+a.gl { color: inherit; text-decoration: underline; text-decoration-color: var(--orange); }
 .help-link { background: none; border: 0; padding: 0; font: inherit; color: var(--purple); text-decoration: underline; cursor: pointer; }
 .bigbtn b { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
 .bigbtn span { font-size: 0.9rem; opacity: 0.92; }
@@ -350,8 +366,9 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
 <!-- ============ CAMINO ============ -->
 <section class="view" id="v-camino" hidden>
   <h2 id="camtitle" style="margin:0;font-size:1.25rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase">Mi camino a RED, paso a paso</h2>
-  <p class="note" style="text-align:left;margin-top:-8px">Los pasos van en el orden en que tienes que hacerlos. Marca «Hecho» según avances. Lo que viene del plan de desvinculación y no de la guía lleva una etiqueta.</p>
+  <p class="note" style="text-align:left;margin-top:-8px">Sigue los pasos de arriba abajo, en el orden en que tienes que hacerlos. Toca «Cómo se hace» para ver el detalle de cada uno y marca «Hecho» cuando lo tengas. Lo que viene del plan de desvinculación y no de la guía lleva una etiqueta.</p>
   <div id="slot2" style="display:flex;flex-direction:column;gap:16px"></div>
+  <section class="card prog" id="prog"></section>
   <ol class="steps" id="chk"></ol>
   <button class="reset" id="resetchk" type="button">Desmarcar todo</button>
   <div class="btnrow"><button type="button" class="dl-btn" data-schema="2">Descargar el esquema para imprimir (PDF)</button></div>
@@ -1241,31 +1258,68 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     return "Plazo: " + fdate(st.due) + " (en " + plural(st.n, "día", "días") + ")";
   }
   function renderChk() {
-    var end = endDate(), html = "", hidden = CHK.filter(function (c) { return !active(c); }).length, n = 0;
+    var end = endDate(), html = "", hidden = CHK.filter(function (c) { return !active(c); }).length, n = 0, nx = nextPick().c;
     PH.forEach(function (p) {
-      var rows = "";
+      var rows = "", pt = 0, pd = 0;
       CHK.forEach(function (c) {
         if (c.ph !== p.id) { return; }
         var ok = active(c);
         if (!ok && !showAll) { return; }
-        if (ok) { n++; }
+        if (ok) { n++; pt++; if (S.chk[c.id]) { pd++; } }
+        var isNext = ok && nx && nx.id === c.id, openIt = ok && (openSteps[c.id] !== undefined ? openSteps[c.id] : isNext);
         var st = status(c, end), w = ok && c.w && typeof c.w === "object" && S.route && c.w[S.route];
         var where = typeof c.w === "string" ? c.w : c.wh;
-        rows += '<li class="step' + (S.chk[c.id] ? " done" : "") + (ok ? "" : " na") + '"><span class="no">' + (ok ? n : "–") + '</span><div class="sb"><h3>' + esc(c.k) + '</h3><p>' + esc(c.t) + '</p>' +
+        rows += '<li class="step' + (S.chk[c.id] ? " done" : "") + (ok ? "" : " na") + (isNext ? " next" : "") + '" id="st-' + c.id + '"><span class="no">' + (ok ? n : "–") + '</span><div class="sb">' +
+          (isNext ? '<span class="nxtbadge">Tu siguiente paso</span>' : '') + '<h3>' + esc(c.k) + '</h3>' +
           '<div class="meta">' + (where ? '<span class="chip"><b>Dónde</b> ' + esc(where) + '</span>' : '') +
           (c.a ? '<a class="chip abtn" href="#a-' + c.a + '"><b>Anexo ' + c.a + '</b> Rellenar</a>' : '') + (c.o ? '<span class="chip plan">' + (c.o === PLAN ? "Del plan, no de la guía" : "Documento aportado, no de la guía") + '</span>' : '') + '</div>' +
-          (st ? '<span class="due ' + st.cls + '">' + dueText(st) + '</span>' : (end && !c.r && ok ? '<span class="due later">La guía no fija plazo</span>' : '')) +
-          (w ? '<span class="wn">' + esc(w) + '</span>' : '') + (ok && c.n ? '<span class="wn" style="color:var(--purple)">' + esc(c.n) + '</span>' : '') + (ok ? "" : '<span class="tagna">No aplica a tu caso</span>') +
-          srcHTML(c) +
+          (st ? '<span class="due ' + st.cls + '">' + dueText(st) + '</span>' : '') +
+          (w ? '<span class="wn">' + esc(w) + '</span>' : '') + (ok ? "" : '<span class="tagna">No aplica a tu caso</span>') +
+          '<details class="more"' + (openIt ? " open" : "") + '><summary>Cómo se hace</summary><div class="mbody"><p>' + esc(c.t) + '</p>' +
+          (ok && c.n ? '<span class="wn" style="color:var(--purple)">' + esc(c.n) + '</span>' : '') +
+          (!st && end && !c.r && ok ? '<span class="due later">La guía no fija plazo para este paso.</span>' : '') +
+          srcHTML(c) + '</div></details>' +
           '<label class="tick"><input type="checkbox" data-id="' + c.id + '"' + (S.chk[c.id] ? " checked" : "") + '><span>Hecho</span></label></div></li>';
       });
-      if (rows) { html += '<li class="phh"><b>' + p.t + '</b><span>' + p.d + '</span></li>' + rows; }
+      if (rows) { html += '<li class="phh"><b>' + p.t + '</b><span>' + p.d + '</span>' + (pt ? '<span class="phc">' + pd + ' de ' + pt + ' hechos</span>' : '') + '</li>' + rows; }
     });
     if (S.route && hidden) {
       html = '<li class="phh" style="padding-bottom:6px"><span>' + (showAll ? "Se muestran también " : "Se ocultan ") + plural(hidden, "paso que no aplica", "pasos que no aplican") + ' a tu caso. <a href="#camino" id="toggleall">' + (showAll ? "Ocultarlos" : "Mostrarlos") + '</a></span></li>' + html;
     }
     $("chk").innerHTML = html;
   }
+
+  var openSteps = {}, pendingStep = null;
+  function renderProg() {
+    var tot = 0, dn = 0;
+    CHK.forEach(function (c) { if (active(c)) { tot++; if (S.chk[c.id]) { dn++; } } });
+    var pk = nextPick();
+    $("prog").innerHTML = '<div class="phead"><b>Llevas ' + dn + ' de ' + tot + ' pasos hechos</b></div>' +
+      '<div class="pbar" role="progressbar" aria-valuemin="0" aria-valuemax="' + tot + '" aria-valuenow="' + dn + '"><i style="width:' + (tot ? Math.round(dn * 100 / tot) : 0) + '%"></i></div>' +
+      '<div class="btnrow">' + (pk.c ? '<button type="button" class="dl-btn" data-goto="' + pk.c.id + '">Ir a mi siguiente paso</button>' : '<span class="note">Has marcado todos los pasos que te aplican.</span>') +
+      '<button type="button" class="copy" id="openall">Abrir todos los detalles</button><button type="button" class="copy" id="closeall">Cerrar todos</button></div>';
+  }
+  function scrollToStep(id) { var el = $("st-" + id); if (el) { el.scrollIntoView(); } }
+  function gotoStep(id) {
+    openSteps[id] = true;
+    if (location.hash === "#camino") { renderChk(); scrollToStep(id); }
+    else { pendingStep = id; location.hash = "#camino"; }
+  }
+  document.addEventListener("click", function (e) {
+    var g = e.target.closest && e.target.closest("[data-goto]");
+    if (g) { e.preventDefault(); gotoStep(g.getAttribute("data-goto")); return; }
+    if (e.target.id === "openall" || e.target.id === "closeall") {
+      var on = e.target.id === "openall";
+      CHK.forEach(function (c) { openSteps[c.id] = on; });
+      renderChk();
+    }
+  });
+  $("chk").addEventListener("click", function (e) {
+    var sm = e.target.closest && e.target.closest("summary");
+    if (!sm) { return; }
+    var li = sm.closest("li.step");
+    if (li) { openSteps[li.id.slice(3)] = !sm.parentNode.open; }
+  });
 
   /* ---------------- AVISOS Y SIGUIENTE PASO ---------------- */
   function alertsHTML() {
@@ -1281,17 +1335,17 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     });
     var h = '<p class="note" style="margin:0">Fin de compromiso: <b style="color:var(--ink)">' + fdate(end) + '</b> · ' + (diffDays(end) >= 0 ? "faltan " + plural(diffDays(end), "día", "días") : "terminó hace " + plural(-diffDays(end), "día", "días")) + '</p>';
     if (late.length) {
-      h += '<div class="al late"><h3>Te has dejado ' + plural(late.length, "paso", "pasos") + ' sin marcar</h3><ul>' + late.map(function (x) { return '<li><b>' + esc(x[0].k) + '</b><br><span class="due late">' + dueText(x[1]) + '</span></li>'; }).join("") + '</ul><p class="note">Si ya lo has hecho, o no te aplica, márcalo en la lista.</p></div>';
+      h += '<div class="al late"><h3>Te has dejado ' + plural(late.length, "paso", "pasos") + ' sin marcar</h3><ul>' + late.map(function (x) { return '<li><a href="#camino" class="gl" data-goto="' + x[0].id + '"><b>' + esc(x[0].k) + '</b></a><br><span class="due late">' + dueText(x[1]) + '</span></li>'; }).join("") + '</ul><p class="note">Si ya lo has hecho, o no te aplica, márcalo en la lista.</p></div>';
     }
     if (soon.length) {
-      h += '<div class="al soon"><h3>Vencen en 10 días o menos</h3><ul>' + soon.map(function (x) { return '<li><b>' + esc(x[0].k) + '</b><br><span class="due soon">' + dueText(x[1]) + '</span></li>'; }).join("") + '</ul></div>';
+      h += '<div class="al soon"><h3>Vencen en 10 días o menos</h3><ul>' + soon.map(function (x) { return '<li><a href="#camino" class="gl" data-goto="' + x[0].id + '"><b>' + esc(x[0].k) + '</b></a><br><span class="due soon">' + dueText(x[1]) + '</span></li>'; }).join("") + '</ul></div>';
     }
     if (!late.length && !soon.length) {
       h += '<div class="al ok"><h3>Sin avisos por ahora</h3><p style="margin:0;font-size:.92rem">' + (next ? 'Próximo plazo: <b>' + esc(next.c.k) + '</b>, el ' + fdate(next.due) + ' (en ' + plural(next.n, "día", "días") + ').' : 'No quedan plazos con fecha pendientes.') + '</p></div>';
     }
     return h;
   }
-  function nextHTML() {
+  function nextPick() {
     var end = endDate(), urgent = null, first = null;
     CHK.forEach(function (c) {
       if (!active(c) || S.chk[c.id]) { return; }
@@ -1299,11 +1353,14 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
       var st = status(c, end);
       if (st && st.n <= 10 && (!urgent || st.n < urgent.st.n)) { urgent = { c: c, st: st }; }
     });
-    var c = urgent ? urgent.c : first;
+    return { c: urgent ? urgent.c : first, urgent: urgent };
+  }
+  function nextHTML() {
+    var end = endDate(), pk = nextPick(), urgent = pk.urgent, c = pk.c;
     if (!c) { return '<section class="card nxt"><div class="head"><h2>Siguiente paso</h2><span class="badge" style="background:var(--ok);color:#06231a">Todo marcado</span></div><p>Has marcado todos los pasos que te aplican.</p></section>'; }
     var st = urgent ? urgent.st : status(c, end), tag = urgent ? (urgent.st.n < 0 ? ["Vencido", "late"] : ["Urgente", ""]) : ["Pendiente", ""];
     return '<section class="card nxt"><div class="head"><h2>Siguiente paso</h2><span class="badge ' + tag[1] + '">' + tag[0] + '</span></div><p><b>' + esc(c.k) + '</b></p><p class="note" style="color:var(--ink)">' + esc(c.t) + '</p>' +
-      (st ? '<span class="due ' + st.cls + '">' + dueText(st) + '</span>' : '') + srcHTML(c) + '<a href="#camino" style="font-weight:600">Ver el camino completo</a></section>';
+      (st ? '<span class="due ' + st.cls + '">' + dueText(st) + '</span>' : '') + srcHTML(c) + '<a href="#camino" data-goto="' + c.id + '" style="font-weight:600">Ver este paso en el camino</a></section>';
   }
   function dateCard(n) {
     return '<section class="card p"><h2>Mi compromiso</h2>' +
@@ -1314,7 +1371,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
       '<div class="alerts alx"></div></section>';
   }
   $("slot1").innerHTML = '<div class="nxt-slot" data-home="1" style="display:flex;flex-direction:column;gap:16px"></div><div class="alerts alx"></div>';
-  $("slot2").innerHTML = dateCard(2) + '<div class="nxt-slot"></div>';
+  $("slot2").innerHTML = dateCard(2);
 
   /* ---------------- CALENDARIO ---------------- */
   function ymd(d) { return d.getFullYear() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2); }
@@ -1383,7 +1440,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
   /* ---------------- REFRESCO ---------------- */
   function setAll(sel, val) { Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) { if (el.value !== val && el !== document.activeElement) { el.value = val; } }); }
   function refresh() {
-    renderChk(); renderPlazos(); renderCal();
+    renderChk(); renderProg(); renderPlazos(); renderCal();
     setAll(".dt", S.cld); setAll(".rt", S.route); setAll(".fs", S.fest);
     var h = alertsHTML(), nh = nextHTML();
     Array.prototype.forEach.call(document.querySelectorAll(".alx"), function (el, i) { el.innerHTML = h + (i === 0 && endDate() ? '<p style="margin:0"><a href="#camino">Ver todos los pasos y plazos</a></p>' : ""); });
@@ -1825,6 +1882,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     var t = anchor ? $(anchor) : null;
     if (t) { if (t.tagName === "DETAILS") { t.open = true; } t.scrollIntoView(); } else { window.scrollTo(0, 0); }
     updateTop();
+    if (pendingStep && view === "camino") { renderChk(); scrollToStep(pendingStep); pendingStep = null; }
   }
   function updateTop() { $("totop").hidden = (window.pageYOffset || document.documentElement.scrollTop) < 700; }
   window.addEventListener("scroll", updateTop, { passive: true });
