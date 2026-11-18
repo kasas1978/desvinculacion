@@ -1,5 +1,5 @@
 /* Guía de desvinculación: funciona sin conexión. Sube el número de VERSION cada vez que cambies archivos. */
-var VERSION = "desvinculacion-v24";
+var VERSION = "desvinculacion-v25";
 var ARCHIVOS = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "pdf-lib.min.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(ARCHIVOS); }).then(function () { return self.skipWaiting(); }));
@@ -14,7 +14,7 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(e.request.url);
   if (url.origin !== location.origin) { return; }
   e.respondWith(
-    fetch(e.request).then(function (r) {
+    fetch(new Request(e.request, { cache: "no-store" })).then(function (r) {
       var copia = r.clone();
       caches.open(VERSION).then(function (c) { c.put(e.request, copia); });
       return r;
