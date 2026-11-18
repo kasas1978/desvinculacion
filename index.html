@@ -98,6 +98,9 @@ html.bigtext .nav a { font-size: 10.5px; }
 .quick a { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-decoration: none; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-weight: 700; min-height: 48px; }
 .quick a::after { content: "❯"; color: var(--orange); }
 .quick a small { display: block; font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+.inst > summary { cursor: pointer; display: flex; align-items: center; min-height: 40px; font-weight: 700; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); }
+.inst[open] > summary { margin-bottom: 8px; }
+.alerts.alx:empty { display: none; }
 .help-link { background: none; border: 0; padding: 0; font: inherit; color: var(--purple); text-decoration: underline; cursor: pointer; }
 .bigbtn b { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
 .bigbtn span { font-size: 0.9rem; opacity: 0.92; }
@@ -323,45 +326,24 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     <a class="bigbtn" href="#camino" style="background:linear-gradient(100deg,var(--grad-a),var(--grad-b))"><b>Mi camino a RED</b><span>Todos los pasos, en orden, del primero al último</span></a>
     <a class="bigbtn p" href="#anexos"><b>Anexos</b><span>Rellénalos aquí y descárgalos en PDF</span></a>
   </div>
+  <div id="slot1" style="display:flex;flex-direction:column;gap:16px"></div>
   <section class="card">
-    <h2>¿Qué necesitas hacer?</h2>
+    <h2>¿Algo más?</h2>
     <nav class="quick" aria-label="Accesos rápidos">
-      <a href="#camino"><span>Quiero saber qué hacer ahora<small>Tus pasos, en orden y con tus fechas</small></span></a>
-      <a href="#importante"><span>Quiero saber qué papeles necesito<small>Qué es cada papel y dónde se pide</small></span></a>
-      <a href="#anexos"><span>Quiero rellenar un anexo<small>Lo rellenas y lo descargas en PDF</small></span></a>
       <a href="#prima"><span>Quiero calcular mi prima<small>Pon tus años de servicio</small></span></a>
       <a href="#guia"><span>Quiero buscar una duda<small>Busca en el texto de la guía</small></span></a>
     </nav>
   </section>
-  <div id="slot1" style="display:flex;flex-direction:column;gap:16px"></div>
-  <section class="card p">
-    <h2>El camino a RED en 6 pasos</h2>
-    <ol class="ol-red">
-      <li><b>Comprueba y decide.</b> Hacen falta 18 años de servicio y llegar a los 45 años. RED y prima son incompatibles.</li>
-      <li><b>Solicita el RED</b> (<a href="#a-II">Anexo II</a>). Se puede pedir desde que entra en vigor el compromiso de larga duración; la guía recomienda hacerlo con 3 meses de antelación. Pide también el certificado de formación (<a href="#a-VI">Anexo VI</a>).</li>
-      <li><b>Antes del cese.</b> Ficha del certificado de empresa (<a href="#a-V">Anexo V</a>).</li>
-      <li><b>El día del cese.</b> Alta en el SEPE, paro en 15 días hábiles, Subdelegación, asignación y TIM modelo D.</li>
-      <li><b>Dos primeros meses.</b> Acreditación de existencia.</li>
-      <li><b>Después.</b> Acreditación cada año en tu mes de nacimiento. Si aceptas un empleo público temporal, suspende la asignación (<a href="#a-III">Anexo III</a>).</li>
-    </ol>
-    <p class="src"><b>Guía</b> §9, 10 y 11 · págs. 9 a 16</p>
-  </section>
-  <section class="card">
-    <h2>Para llevar en papel</h2>
-    <p class="note" style="text-align:left;color:var(--ink)">Esquema rápido con todo el camino a RED, los anexos y lo que no se puede olvidar, en un PDF para imprimir. Si has puesto la fecha de tu compromiso, lleva tus fechas.</p>
-    <div class="btnrow"><button type="button" class="dl-btn" data-schema="1">Descargar el esquema (PDF)</button></div>
-    <p class="note" data-schemamsg="1"></p>
-  </section>
-  <section class="card p">
-    <h2>Ponla en tu móvil</h2>
+  <a class="tile" href="#ayudas"><b>Ayudas del Estado</b><span>Solo consulta: paro, subsidios por desempleo, asignación como renta e Ingreso Mínimo Vital</span></a>
+  <details class="card p inst">
+    <summary>Ponla en tu móvil</summary>
     <p>Así la tienes como una aplicación más y funciona <b>sin cobertura</b>, aunque estés en un sitio sin datos.</p>
     <ul>
       <li><b>Android (Chrome):</b> toca los tres puntos de arriba a la derecha y elige «Instalar aplicación» o «Añadir a pantalla de inicio».</li>
       <li><b>iPhone (Safari):</b> toca el botón de compartir (el cuadrado con la flecha) y elige «Añadir a pantalla de inicio».</li>
     </ul>
     <p class="note">Si ya la tienes puesta y no ves los cambios nuevos, ciérrala del todo y ábrela otra vez.</p>
-  </section>
-  <a class="tile" href="#ayudas"><b>Ayudas del Estado</b><span>Solo consulta: paro, subsidios por desempleo, asignación como renta e Ingreso Mínimo Vital</span></a>
+  </details>
   <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a></p>
 </section>
 
@@ -1331,7 +1313,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
       '<p class="note">Los festivos solo cuentan para los 15 días hábiles del paro, además de los nacionales. Escríbelos como día/mes, separados por comas. La app calcula tus plazos con estos datos y te avisa cuando la abres; no envía notificaciones con la app cerrada. Todo se guarda solo en este navegador.</p>' +
       '<div class="alerts alx"></div></section>';
   }
-  $("slot1").innerHTML = '<div class="nxt-slot"></div>' + dateCard(1);
+  $("slot1").innerHTML = '<div class="nxt-slot" data-home="1" style="display:flex;flex-direction:column;gap:16px"></div><div class="alerts alx"></div>';
   $("slot2").innerHTML = dateCard(2) + '<div class="nxt-slot"></div>';
 
   /* ---------------- CALENDARIO ---------------- */
@@ -1405,7 +1387,8 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     setAll(".dt", S.cld); setAll(".rt", S.route); setAll(".fs", S.fest);
     var h = alertsHTML(), nh = nextHTML();
     Array.prototype.forEach.call(document.querySelectorAll(".alx"), function (el, i) { el.innerHTML = h + (i === 0 && endDate() ? '<p style="margin:0"><a href="#camino">Ver todos los pasos y plazos</a></p>' : ""); });
-    Array.prototype.forEach.call(document.querySelectorAll(".nxt-slot"), function (el) { el.innerHTML = nh; });
+    var pideFecha = '<a class="tile" href="#camino"><b>Pon la fecha de tu compromiso</b><span>Así la guía te dice tus plazos y te avisa de lo urgente</span></a>';
+    Array.prototype.forEach.call(document.querySelectorAll(".nxt-slot"), function (el) { el.innerHTML = nh + (el.getAttribute("data-home") && !endDate() ? pideFecha : ""); });
     var end = endDate(), cnt = 0;
     if (end) { CHK.forEach(function (c) { var st = status(c, end); if (st && !st.done && st.n <= 10) { cnt++; } }); }
     $("dot").hidden = cnt === 0; $("dot").textContent = cnt;
