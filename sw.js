@@ -1,5 +1,5 @@
 /* Guía de desvinculación: funciona sin conexión. Sube el número de VERSION cada vez que cambies archivos. */
-var VERSION = "desvinculacion-v25";
+var VERSION = "desvinculacion-v26";
 var ARCHIVOS = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "pdf-lib.min.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(ARCHIVOS); }).then(function () { return self.skipWaiting(); }));
@@ -7,7 +7,7 @@ self.addEventListener("install", function (e) {
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
     return Promise.all(ks.filter(function (k) { return k !== VERSION; }).map(function (k) { return caches.delete(k); }));
-  }).then(function () { return self.clients.claim(); }));
+  }).then(function () { return self.clients.claim(); }).then(function () { return self.clients.matchAll({ type: "window" }); }).then(function (cs) { cs.forEach(function (c) { try { c.navigate(c.url); } catch (er) { /* sin permiso */ } }); }));
 });
 self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") { return; }
