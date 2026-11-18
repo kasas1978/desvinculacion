@@ -85,7 +85,7 @@ body:not([data-view="inicio"]) .top p { display: none; }
 .qchips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
 .qchip { flex-shrink: 0; font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 38px; cursor: pointer; }
 .qchip.on { background: var(--orange); color: var(--orange-ink); border-color: var(--orange); }
-body[data-view="prima"] #profbar, body[data-view="guia"] #profbar, body[data-view="ayudas"] #profbar, body[data-view="aviso"] #profbar { display: none !important; }
+body[data-view="prima"] #profbar, body[data-view="guia"] #profbar, body[data-view="ayudas"] #profbar, body[data-view="pensiones"] #profbar, body[data-view="aviso"] #profbar { display: none !important; }
 html.bigtext .nav a { font-size: 10.5px; }
 .totop { position: fixed; right: 14px; bottom: 84px; z-index: 20; width: 48px; height: 48px; border-radius: 50%; border: 0; font-size: 1.4rem; font-weight: 800; color: var(--orange-ink); background: var(--orange); box-shadow: 0 2px 10px rgba(0,0,0,0.4); cursor: pointer; }
 .totop[hidden] { display: none; }
@@ -351,6 +351,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     </nav>
   </section>
   <a class="tile" href="#ayudas"><b>Ayudas del Estado</b><span>Solo consulta: paro, subsidios por desempleo, asignación como renta e Ingreso Mínimo Vital</span></a>
+  <a class="tile" href="#pensiones"><b>Plan de Pensiones AGE: documento P-90</b><span>Cómo pedirlo si vas a rescatar o traspasar el plan siendo RED</span></a>
   <details class="card p inst">
     <summary>Ponla en tu móvil</summary>
     <p>Así la tienes como una aplicación más y funciona <b>sin cobertura</b>, aunque estés en un sitio sin datos.</p>
@@ -627,6 +628,32 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
       <li>El importe de la asignación del RED.</li>
       <li>Las ayudas de comunidades autónomas y ayuntamientos (justicia gratuita, vivienda protegida, abono de transporte…), que cambian según dónde vivas.</li>
     </ul>
+  </section>
+</section>
+
+<!-- ============ PLAN DE PENSIONES AGE ============ -->
+<section class="view" id="v-pensiones" hidden>
+  <div class="alert">
+    <h3>No es de la guía ni es oficial</h3>
+    <p>Esta sección sale de un blog de reservistas, no de la guía ni del Ministerio de Defensa. El blog no indica plazos de respuesta ni formulario oficial. <b>Confirma el correo y el procedimiento con Defensa antes de enviar nada.</b></p>
+    <p class="src"><b>Blog no oficial</b> · reservistadeespecialdisponibilidad.blogspot.com · «Solicitud documento P-90» (mayo de 2025)</p>
+  </div>
+  <section class="card">
+    <h2>Plan de Pensiones AGE: el documento P-90</h2>
+    <p>El P-90 es un certificado con las aportaciones anuales que el Estado ha hecho a tu nombre en el Plan de Pensiones AGE y su suma total. Se pide para rescatar o traspasar a tu nombre el plan que está en BBVA. Los rendimientos de esas aportaciones los informa BBVA.</p>
+    <h3>Cómo pedirlo, paso a paso</h3>
+    <ol class="ol-red">
+      <li><b>Prepara el DNI.</b> Una copia por ambas caras.</li>
+      <li><b>Escribe un correo</b> a <b>planpensiones@oc.mde.es</b> con el asunto «Solicitud documentación para traspaso Plan Pensiones AGE». <button class="copy" type="button" data-copy="planpensiones@oc.mde.es">Copiar</button></li>
+      <li><b>En el cuerpo del correo pon:</b> tu nombre y apellidos; que estás en situación de Reservista de Especial Disponibilidad (RED); que quieres traspasar a tu nombre las cantidades del Plan AGE que están en BBVA; y que solicitas el documento P-90.</li>
+      <li><b>Adjunta el DNI</b> por ambas caras y envíalo.</li>
+      <li><b>Alternativa presencial:</b> puedes presentar la solicitud en persona en las subdelegaciones de Defensa.</li>
+    </ol>
+    <p class="note" id="pmsg"></p>
+    <h3>Si BBVA te pide más papeles</h3>
+    <p>Según el blog, algunas sucursales o agentes han pedido también el certificado de demandante de empleo, el certificado de no percibir subsidio del SEPE o la vida laboral. Depende del director de la sucursal o del agente, así que pregúntales antes de empezar.</p>
+    <h3>Dudas</h3>
+    <p>El blog da el correo reservistaminisdef@gmail.com, de lunes a viernes de 15:00 a 18:00.</p>
   </section>
 </section>
 
@@ -1217,7 +1244,6 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     /* ---- Último mes ---- */
     { id: "certemp", ph: "mes", f: null, k: "Pide el certificado de empresa", t: "El certificado de empresa acredita ante el SEPE la situación legal de desempleo y su causa. Hay que rellenar la ficha (Anexo V) con tus datos y las fechas de inicio y finalización del contrato, y enviarla por mensajería oficial a la Subdirección General de Servicios Económicos y Pagadurías. Esa Subdirección expide el certificado y lo remite al SEPE.", w: "Por tu unidad de destino, por mensajería oficial", a: "V", n: "El plan da por hecho que el cese ya está en el SEPE entre el día 2 y el día 15 tras el cese, por eso conviene enviarla antes de salir.", s: "Guía §11.2 · pág. 15", r: null },
     { id: "pensiones", ph: "mes", f: null, o: PLAN, k: "Pide el documento de pensión de retiro", t: "Envía un correo a pensiones@oc.mde.es con tu DNI por anverso y reverso, pidiendo el «documento que acredite si reúno o no los requisitos para generar derecho a pensión de retiro». Guárdalo tú: te lo pedirán al solicitar el paro.", w: "pensiones@oc.mde.es", s: "Plan de desvinculación (enero-febrero para un cese en marzo)", r: null },
-    { id: "p90", ph: "mes", f: ["r45"], o: BLOG, k: "Si vas a rescatar o traspasar el Plan de Pensiones AGE, pide el documento P-90", t: "El P-90 es el certificado de las aportaciones anuales que el Estado ha hecho a tu nombre en el Plan AGE y su suma total; los rendimientos los informa BBVA. Envía un correo a planpensiones@oc.mde.es con el asunto «Solicitud documentación para traspaso Plan Pensiones AGE». En el cuerpo pon tu nombre y apellidos, que estás en situación de Reservista de Especial Disponibilidad (RED), que quieres traspasar a tu nombre las cantidades del Plan AGE que están en BBVA y que solicitas el documento P-90. Adjunta tu DNI por ambas caras. También puedes presentarlo en persona en las subdelegaciones de Defensa. Algunas sucursales o agentes de BBVA han pedido además el certificado de demandante de empleo, el de no percibir subsidio del SEPE o la vida laboral: confírmalo con ellos antes.", w: "planpensiones@oc.mde.es o Subdelegación de Defensa", n: "Información de un blog de reservistas, no oficial: no indica plazos de respuesta ni formulario. Confirma el correo y el procedimiento con el Ministerio de Defensa antes de enviar nada. Dudas del blog: reservistaminisdef@gmail.com (lunes a viernes, 15:00 a 18:00).", s: "reservistadeespecialdisponibilidad.blogspot.com (solicitud documento P-90, mayo de 2025)", r: null },
     { id: "cesecert", ph: "mes", f: null, o: PLAN, k: "Pide el certificado de la fecha de cese (opcional pero útil)", t: "Pide a la Plana Mayor (S-1) un certificado oficial con la fecha exacta de tu cese en servicio activo. Te lo pedirán para el canje del permiso de conducción.", w: "Plana Mayor (S-1) de tu unidad", s: "Plan de desvinculación (febrero para un cese en marzo)", r: null },
     /* ---- Cese y 15 días ---- */
     { id: "alta", ph: "cese", f: null, k: "Inscríbete como demandante de empleo", t: "En la Sede Electrónica del SEPE se hacen los trámites de demanda de empleo: inscribirse como demandante, renovar la demanda, actualizar la situación, obtener la tarjeta, informes y certificaciones. Se accede con usuario y contraseña de una oficina del SEPE, DNI electrónico o certificado digital.", w: "Servicio Autonómico de Empleo o SEPE", n: "Del plan y del documento aportado, no de la guía: es obligatoria y previa a pedir cualquier prestación. Hazla a partir del día siguiente a la fecha efectiva de baja, entre el día 1 y el día 15. Mejor el primer día.", s: "Guía §11.1 · pág. 15", r: null },
@@ -1531,6 +1557,11 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
   $("contacts").innerHTML = '<h2>Correos</h2><div class="ct">' + CT.map(function (c) {
     return '<span><b>' + c[0] + '</b><small>' + c[1] + ' · ' + c[2] + '</small></span><button class="copy" type="button" data-copy="' + c[0] + '">Copiar</button>';
   }).join("") + '</div><p class="note" id="ctmsg"></p>';
+  $("v-pensiones").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-copy]"); if (!b) { return; }
+    var v = b.getAttribute("data-copy"), m = $("pmsg");
+    try { navigator.clipboard.writeText(v).then(function () { m.textContent = "Copiado: " + v; }, function () { m.textContent = "No se pudo copiar. Selecciona el texto a mano: " + v; }); } catch (err) { m.textContent = "No se pudo copiar. Selecciona el texto a mano: " + v; }
+  });
   $("contacts").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-copy]"); if (!b) { return; }
     var v = b.getAttribute("data-copy"), m = $("ctmsg");
@@ -1873,7 +1904,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
   });
 
   /* ---------------- NAVEGACIÓN ---------------- */
-  var VIEWS = ["inicio", "camino", "importante", "guia", "prima", "anexos", "ayudas", "aviso"];
+  var VIEWS = ["inicio", "camino", "importante", "guia", "prima", "anexos", "ayudas", "pensiones", "aviso"];
   function route() {
     var h = (location.hash || "#inicio").slice(1), view = h, anchor = null;
     if (h.indexOf("a-") === 0) { view = "anexos"; anchor = h; }
