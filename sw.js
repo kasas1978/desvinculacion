@@ -1,5 +1,5 @@
 /* Guía de desvinculación: funciona sin conexión. Sube el número de VERSION cada vez que cambies archivos. */
-var VERSION = "desvinculacion-v18";
+var VERSION = "desvinculacion-v19";
 var ARCHIVOS = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "pdf-lib.min.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(ARCHIVOS); }).then(function () { return self.skipWaiting(); }));
