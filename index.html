@@ -361,7 +361,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     </ul>
     <p class="note">Si ya la tienes puesta y no ves los cambios nuevos, ciérrala del todo y ábrela otra vez.</p>
   </details>
-  <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a> · Versión 23</p>
+  <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a> · Versión <span id="ver"></span></p>
 </section>
 
 <!-- ============ CAMINO ============ -->
@@ -1934,22 +1934,31 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
 </script>
 <div id="upd" hidden role="status" style="position:fixed;left:0;right:0;top:0;z-index:50;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px 12px;background:var(--orange);color:var(--orange-ink);font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,0.4)"><span>Hay una versión nueva de la guía.</span><button type="button" id="updbtn" style="border:0;border-radius:8px;padding:8px 14px;font-weight:800;background:var(--orange-ink);color:var(--orange);cursor:pointer">Actualizar</button></div>
 <style>#upd[hidden]{display:none}</style>
-<script>if ("serviceWorker" in navigator) {
-  var hadCtrl = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener("controllerchange", function () { if (hadCtrl) { document.getElementById("upd").hidden = false; } hadCtrl = true; });
+<script>
+var APP_VERSION = 24;
+(function () {
+  var v = document.getElementById("ver"); if (v) { v.textContent = APP_VERSION; }
+  function check() {
+    fetch("index.html?c=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.text(); }).then(function (t) {
+      var m = t.match(/APP_VERSION = (\d+)/);
+      if (m && parseInt(m[1], 10) > APP_VERSION) { document.getElementById("upd").hidden = false; }
+    }).catch(function () {});
+  }
   document.getElementById("updbtn").addEventListener("click", function () {
     var b = this; b.disabled = true; b.textContent = "Actualizando…";
-    var go = function () { location.reload(); };
-    var lim = (window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : Promise.resolve());
-    Promise.all([lim, fetch("index.html", { cache: "reload" }), fetch("sw.js", { cache: "reload" })]).then(go, go);
+    var go = function () { location.replace(location.pathname + "?u=" + Date.now() + location.hash); };
+    var a = window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : Promise.resolve();
+    var c = navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }) : Promise.resolve();
+    Promise.all([a, c]).then(go, go);
     setTimeout(go, 4000);
   });
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js").then(function (r) {
-      document.addEventListener("visibilitychange", function () { if (!document.hidden) { r.update().catch(function () {}); } });
-      setInterval(function () { r.update().catch(function () {}); }, 3600000);
-    }).catch(function () {});
+    if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(function () {}); }
+    setTimeout(check, 2000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) { check(); } });
+    setInterval(check, 3600000);
   });
-}</script>
+})();
+</script>
 </body>
 </html>
