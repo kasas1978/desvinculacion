@@ -35,7 +35,7 @@
 }
 * { box-sizing: border-box; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45;
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 1rem; line-height: 1.45;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 0 110px;
@@ -70,6 +70,20 @@ a { color: var(--purple); }
 .big { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .bigbtn { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--orange-ink); background: var(--orange); border-radius: 18px; padding: 20px 18px; }
 .bigbtn.p { background: var(--grad-a); }
+html.bigtext { font-size: 118%; }
+.top { position: relative; }
+.fsbtn { position: absolute; top: 10px; right: max(10px, env(safe-area-inset-right, 0px)); font: inherit; font-size: 0.8rem; font-weight: 800; color: #fff; background: rgba(0,0,0,0.28); border: 1px solid rgba(255,255,255,0.45); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
+.fsbtn[aria-pressed="true"] { background: #fff; color: #7b2cbf; }
+.howto[hidden] { display: none; }
+.howto h2 { margin: 0; }
+.howto .ol-how { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 8px; font-size: 1.02rem; }
+.howto .btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.howto .ok { font: inherit; font-weight: 800; color: var(--orange-ink); background: var(--orange); border: 0; border-radius: 12px; padding: 12px 20px; cursor: pointer; min-height: 44px; }
+.quick { display: flex; flex-direction: column; gap: 8px; }
+.quick a { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-decoration: none; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-weight: 700; min-height: 48px; }
+.quick a::after { content: "❯"; color: var(--orange); }
+.quick a small { display: block; font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+.help-link { background: none; border: 0; padding: 0; font: inherit; color: var(--purple); text-decoration: underline; cursor: pointer; }
 .bigbtn b { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
 .bigbtn span { font-size: 0.9rem; opacity: 0.92; }
 .bigbtn:focus-visible, .nav a:focus-visible, summary:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
@@ -266,6 +280,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
 </head>
 <body>
 <header class="top">
+  <button type="button" class="fsbtn" id="fsbtn" aria-pressed="false" aria-label="Letra grande: activar o desactivar">A+ Letra grande</button>
   <h1>Guía de desvinculación</h1>
   <p>Tropa y marinería · Compromiso de larga duración</p>
 </header>
@@ -276,11 +291,31 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
 
 <!-- ============ INICIO ============ -->
 <section class="view" id="v-inicio">
+  <section class="card howto" id="howto" hidden>
+    <h2>¿Cómo se usa esta guía?</h2>
+    <ol class="ol-how">
+      <li><b>Mira «Mi camino a RED».</b> Son los pasos en el orden en que los tienes que hacer. Marca «Hecho» según avances.</li>
+      <li><b>Pon la fecha de tu compromiso</b> en «Mi camino a RED». La guía te calculará tus fechas y plazos.</li>
+      <li><b>Rellena los anexos aquí.</b> Los descargas en PDF y los llevas a tu unidad. Tus datos se quedan solo en este móvil.</li>
+    </ol>
+    <p class="note">Abajo del todo tienes el botón de ayuda, por si quieres volver a ver esto. Con «A+ Letra grande» arriba a la derecha se lee mejor.</p>
+    <div class="btnrow"><button type="button" class="ok" id="howtook">Entendido</button></div>
+  </section>
   <div class="big three">
     <a class="bigbtn" href="#importante"><b>Cosas superimportantes</b><span>Lo que no se puede olvidar y los plazos clave</span></a>
     <a class="bigbtn" href="#camino" style="background:linear-gradient(100deg,var(--grad-a),var(--grad-b))"><b>Mi camino a RED</b><span>Todos los pasos, en orden, del primero al último</span></a>
     <a class="bigbtn p" href="#anexos"><b>Anexos</b><span>Rellénalos aquí y descárgalos en PDF</span></a>
   </div>
+  <section class="card">
+    <h2>¿Qué necesitas hacer?</h2>
+    <nav class="quick" aria-label="Accesos rápidos">
+      <a href="#camino"><span>Quiero saber qué hacer ahora<small>Tus pasos, en orden y con tus fechas</small></span></a>
+      <a href="#importante"><span>Quiero saber qué papeles necesito<small>Qué es cada papel y dónde se pide</small></span></a>
+      <a href="#anexos"><span>Quiero rellenar un anexo<small>Lo rellenas y lo descargas en PDF</small></span></a>
+      <a href="#prima"><span>Quiero calcular mi prima<small>Pon tus años de servicio</small></span></a>
+      <a href="#guia"><span>Quiero buscar una duda<small>Busca en el texto de la guía</small></span></a>
+    </nav>
+  </section>
   <div id="slot1" style="display:flex;flex-direction:column;gap:16px"></div>
   <section class="card p">
     <h2>El camino a RED en 6 pasos</h2>
@@ -301,7 +336,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     <p class="note" data-schemamsg="1"></p>
   </section>
   <a class="tile" href="#ayudas"><b>Ayudas del Estado</b><span>Solo consulta: paro, subsidios por desempleo, asignación como renta e Ingreso Mínimo Vital</span></a>
-  <p class="foot"><a href="#aviso">Aviso importante y fuentes de la información</a></p>
+  <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a></p>
 </section>
 
 <!-- ============ CAMINO ============ -->
@@ -1742,6 +1777,15 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     var t = anchor ? $(anchor) : null;
     if (t) { if (t.tagName === "DETAILS") { t.open = true; } t.scrollIntoView(); } else { window.scrollTo(0, 0); }
   }
+  /* ---------------- AYUDA Y LETRA GRANDE ---------------- */
+  function setBig(on) { document.documentElement.classList.toggle("bigtext", on); $("fsbtn").setAttribute("aria-pressed", on ? "true" : "false"); }
+  function showHowto(on) { $("howto").hidden = !on; }
+  setBig(store("bigtext") === "1");
+  showHowto(store("howto") !== "1");
+  $("fsbtn").addEventListener("click", function () { var on = !document.documentElement.classList.contains("bigtext"); setBig(on); store("bigtext", on ? "1" : "0"); });
+  $("howtook").addEventListener("click", function () { showHowto(false); store("howto", "1"); });
+  $("howtoopen").addEventListener("click", function () { showHowto(true); store("howto", "0"); window.scrollTo(0, 0); });
+
   window.addEventListener("hashchange", route);
   loadProfiles(); loadState(); renderAnexos(); refresh(); route();
 })();
