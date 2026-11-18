@@ -361,7 +361,7 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
     </ul>
     <p class="note">Si ya la tienes puesta y no ves los cambios nuevos, ciérrala del todo y ábrela otra vez.</p>
   </details>
-  <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a></p>
+  <p class="foot"><button type="button" class="help-link" id="howtoopen">Cómo usar esta guía</button> · <a href="#aviso">Aviso importante y fuentes de la información</a> · Versión 23</p>
 </section>
 
 <!-- ============ CAMINO ============ -->
@@ -1937,7 +1937,13 @@ details.txt .paper { margin-top: 10px; font-size: 0.85rem; }
 <script>if ("serviceWorker" in navigator) {
   var hadCtrl = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener("controllerchange", function () { if (hadCtrl) { document.getElementById("upd").hidden = false; } hadCtrl = true; });
-  document.getElementById("updbtn").addEventListener("click", function () { location.reload(); });
+  document.getElementById("updbtn").addEventListener("click", function () {
+    var b = this; b.disabled = true; b.textContent = "Actualizando…";
+    var go = function () { location.reload(); };
+    var lim = (window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : Promise.resolve());
+    Promise.all([lim, fetch("index.html", { cache: "reload" }), fetch("sw.js", { cache: "reload" })]).then(go, go);
+    setTimeout(go, 4000);
+  });
   window.addEventListener("load", function () {
     navigator.serviceWorker.register("sw.js").then(function (r) {
       document.addEventListener("visibilitychange", function () { if (!document.hidden) { r.update().catch(function () {}); } });
